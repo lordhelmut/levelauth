@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  div.col-lg-offset-4.col-lg-4
+    div.panel
+      div.panel-heading Sign In 
+      form(name="form", method="post", action="/signin", novalidate)
+        div.form-group
+          label.control-label(for="username") Username
+          input.form-control(type="text", name="username", id="username", placeholder="Username", required, ng-model="username", autofocus)
+          i.halflings-icon.refresh.rotating(ng-show="busy")
+          span.help-block(ng-show="form.username.$dirty && form.username.$error.required") Please enter a username
+          span.help-block(ng-show="form.username.$dirty && form.username.$error.invalidChars") Username may not contain any non-url-safe characters
+        div.form-group
+          label.control-label(for="password") Password
+          input.form-control(type="password", name="password", id="password", ng-model="password", required)
+          span.help-block(ng-show="form.password.$dirty && form.password.$error.required") Please enter a password
+        if error
+          div.alert #{error}
+        input.btn.btn-primary(type="submit", value="Sign in", ng-disabled="form.$invalid")

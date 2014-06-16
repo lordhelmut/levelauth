@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  div.container
+    h1= title
+      p 
+        a.btn.btn-primary(href='/signup') Signup
+      p 
+        a.btn.btn-primary(href='/settings') Settings
+      p 
+        a.btn.btn-primary(href='/signin') Sign in
+
+        if error
+          div.alert #{error}

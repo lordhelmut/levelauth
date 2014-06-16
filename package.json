@@ -1,0 +1,11 @@
+{ 
+  "name":"levelauth",
+  "main":"server.js",
+  "dependencies":{
+	"levelup":"latest",
+	"leveldown":"latest",
+	"express":"3.2.4",
+	"jade":"latest",
+	"pwd":"git://github.com/jlubawy/node-pwd.git"
+	}
+}	
