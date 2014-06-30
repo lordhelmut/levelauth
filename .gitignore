@@ -1,2 +1,4 @@
 node_modules/*
 server.js
+callback.js
+*.sw*
