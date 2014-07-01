@@ -8,6 +8,8 @@ Simple auth program for LevelDB.  Requires express, jade, and pwd library.  Fron
 
 Edit config/db.js and change the path to where to store the database.
 
+Switch branches & start the app
+`git checkout passport-local`
 `node app.js`
 
 Open your browser to http://localhost:30000

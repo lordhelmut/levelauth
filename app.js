@@ -205,7 +205,7 @@ app.post('/signup', function(req, response) {
 
 var psauth = passport.authenticate('local-login', {
 		successRedirect : '/settings', // redirect to the secure profile section
-		failureRedirect : '/signin', // redirect back to the signup page if there is an error
+		failureRedirect : '/signin' // redirect back to the signup page if there is an error
 	})
 
 app.post('/signin', psauth, function(req, response) {
