@@ -10,7 +10,10 @@ var pass = require('pwd');
 
 var levelup  = require('levelup');
 //var db = levelup('/tmp/lvldbtmp.db');
-var db = levelup('/tmp/lvldbtmp.db',{valueEncoding:'json'});
+//var db = levelup('/tmp/lvldbtmp.db',{valueEncoding:'json'});
+var db = require('./config/db.js');
+var passport = require('passport');
+require('./config/passport.js')(passport);
 
 var app = express();
 
@@ -18,12 +21,16 @@ var app = express();
 app.set('port', process.env.PORT || 30000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-//app.use(express.favicon());
+app.use(express.cookieParser());
+app.use(express.session({ secret: 'thisismysecrettherearemanylikeitbutthisoneismine' }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 // development only
 if ('development' == app.get('env')) {
@@ -196,7 +203,12 @@ app.post('/signup', function(req, response) {
     
 });
 
-app.post('/signin', function(req, response) {
+var psauth = passport.authenticate('local-login', {
+		successRedirect : '/settings', // redirect to the secure profile section
+		failureRedirect : '/signin', // redirect back to the signup page if there is an error
+	})
+
+app.post('/signin', psauth, function(req, response) {
    var username = req.body.username;
    var password = req.body.password;
 
@@ -213,34 +225,6 @@ app.post('/signin', function(req, response) {
 		});
 	return
 	}
-
-  db.get(username + ':pwdhash', function(err, value) {
-	if (err) {
-	  if (err.notFound) {
-		//console.log(username + ' not found');
-		return false;
-		}
-	  return console.log(err)
-	  };
-	pwdhash = value;
-	db.get(username + ':pwdsalt', function(err, value) {
-		if (err) { 
-		  if (err.notFound) { return false; } 
-		  return console.log(err)};
-		  pwdsalt = value;
-		  //console.log('pwdhash = ' + pwdhash + '\npwdsalt = ' + pwdsalt)
-   		  pass.hash(password, pwdsalt, function(err,hash) {
-			if (pwdhash == hash ) { 
-				console.log('signin works');
-				response.json(200,username);
-				}
-			else { response.send(403)};
-			})
-		  })
-		
-	})
-	
-	console.log('Password does not verify');
 
    });
 
