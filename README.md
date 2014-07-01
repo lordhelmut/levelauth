@@ -11,3 +11,7 @@ Edit app.js and change the path to where to store the database.
 `node app.js`
 
 Open your browser to http://localhost:30000
+
+### Passport-Local
+
+Switch to the [passport-local](tree/passport-local) branch above to use the npm passport module from passportjs.org
