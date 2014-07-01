@@ -6,7 +6,7 @@ Simple auth program for LevelDB.  Requires express, jade, and pwd library.  Fron
 
 `npm install`
 
-Edit app.js and change the path to where to store the database.
+Edit config/db.js and change the path to where to store the database.
 
 `node app.js`
 
