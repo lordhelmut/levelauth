@@ -14,4 +14,4 @@ Open your browser to http://localhost:30000
 
 ### Passport-Local
 
-Switch to the [passport-local](https://gitub.com/lordhelmut/levelauth/tree/passport-local) branch above to use the npm passport module from passportjs.org
+Switch to the [passport-local](https://github.com/lordhelmut/levelauth/tree/passport-local) branch above to use the npm passport module from passportjs.org
