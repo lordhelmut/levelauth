@@ -1,10 +1,15 @@
 { 
   "name":"levelauth",
-  "main":"server.js",
+  "description":"Simple authorization package using NodeJS, LevelDB, AngularJS",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/lordhelmut/levelauth.git"
+  },
+  "main":"app.js",
   "dependencies":{
 	"levelup":"latest",
 	"leveldown":"latest",
-	"express":"3.2.4",
+	"express":"~3.4.7",
 	"jade":"latest",
 	"pwd":"git://github.com/jlubawy/node-pwd.git"
 	}
