@@ -68,7 +68,10 @@ app.get('/signup', function(req, res) {
 
 // render signup page
 app.get('/settings', function(req, res) {
-  res.render('settings');
+   console.log('the req.session.username is',req.session.username);
+  if (req.session.username === undefined) res.redirect('/menu');
+  else res.render('settings');
+  //res.render('settings');
 });
 
 // render menu page
@@ -198,7 +201,7 @@ app.post('/signup', function(req, response) {
     db.batch(createUser, function(err){
 	if(err) throw err;
 	});
-    
+
   });
     
 });
@@ -231,3 +234,4 @@ app.post('/signin', psauth, function(req, response) {
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+

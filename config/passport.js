@@ -66,6 +66,7 @@ module.exports = function(passport) {
 						  pass.hash(password, pwdsalt, function (err,hash) {
 							if (pwdhash == hash ) { 
 								console.log('password works');
+								req.session.username = uname;
 								return	done(null,uname);
 								}
 							else { 
