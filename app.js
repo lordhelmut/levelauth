@@ -22,7 +22,7 @@ app.set('port', process.env.PORT || 30000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.cookieParser());
-app.use(express.session({ secret: 'thisismysecrettherearemanylikeitbutthisoneismine' }));
+app.use(express.session({ secret: 'thisismysecrettherearemanylikeitbutthisoneismine', cookie:{maxAge:6000}}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.logger('dev'));
@@ -68,7 +68,6 @@ app.get('/signup', function(req, res) {
 
 // render signup page
 app.get('/settings', function(req, res) {
-   console.log('the req.session.username is',req.session.username);
   if (req.session.username === undefined) res.redirect('/menu');
   else res.render('settings');
   //res.render('settings');
