@@ -14,6 +14,8 @@ var levelup  = require('levelup');
 var db = require('./config/db.js');
 var passport = require('passport');
 require('./config/passport.js')(passport);
+var LevelStore = require('connect-leveldb')(express);
+var secureCookie = false;
 
 var app = express();
 
@@ -21,8 +23,23 @@ var app = express();
 app.set('port', process.env.PORT || 30000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-app.use(express.cookieParser());
-app.use(express.session({ secret: 'thisismysecrettherearemanylikeitbutthisoneismine', cookie:{maxAge:6000}}));
+app.use(express.cookieParser('thisismysecrettherearemanylikeitbutthisoneismine'));
+app.use(express.session({ 
+	//key:'BTCIN',
+	//proxy: true, //this should be set at the express level ... but just in case
+	saveUninitialized: false,
+	secret: 'thisismysecrettherearemanylikeitbutthisoneismine', 
+	cookie:{ 
+		//path:'/',
+		secure: secureCookie,
+		maxAge: 3600000 * 24 * 30 + 17 * 3600000
+		},
+	store: new LevelStore({
+		dbLocation: path.join(db.location,'sessions'),
+		//ttl: 5,
+		prefix: 'SESSION:'
+	}),
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.logger('dev'));
@@ -35,6 +52,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
+}
+
+// production
+if ('production' == app.get('env')) {
+	app.set('trust proxy', true)
+	secureCookie = true;
 }
 
 // redirect to menu 
