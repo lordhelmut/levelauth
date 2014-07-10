@@ -92,9 +92,18 @@ app.get('/signup', function(req, res) {
 // render signup page
 app.get('/settings', function(req, res) {
   if (req.session.username === undefined) res.redirect('/menu');
-  else res.render('settings');
-  //res.render('settings');
+  else { res.render('settings') }
 });
+
+app.get('/api/users', function(req, res) {
+  if (req.session.username === undefined) {
+	res.json(404);
+  	}
+  else {
+	res.json({ loggedOnUser: req.session.username } 
+	)}
+});
+  
 
 // render menu page
 app.get('/menu', function(req, res) {

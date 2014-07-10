@@ -1,12 +1,12 @@
 extends layout
 
 block content
-  div.col-lg-offset-4.col-lg-4
+  div(ng-controller='userCtrl').col-lg-offset-4.col-lg-4
     div.panel
       div.panel-heading Settings
+      p(ng-init="GetUser()") Hello {{ user.loggedOnUser | uppercase }} 
       p
         a.btn.btn-primary(href='/menu') Main menu
-      p Ok
 
         if error
           div.alert #{error}
