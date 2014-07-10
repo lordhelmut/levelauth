@@ -1,5 +1,4 @@
 node_modules/*
-server.js
 *.sw*
-callback.js
 npm-debug.log
+lvlauth.db

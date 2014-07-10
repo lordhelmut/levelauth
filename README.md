@@ -6,9 +6,10 @@ Simple auth program for LevelDB.  Requires Node, express, jade, and pwd library.
 
 `npm install`
 
-Edit config/db.js and change the path to where to store the database.
-
 Start the app
 `node app.js` or `npm start`
+
+The level database will be stored in the **lvlauth.db** folder in the same directory by default.  You can change this by setting the environment variable for the DBPATH when starting node.  
+`DBPATH='/path/to/your/preferred/folder' npm start` 
 
 Open your browser to http://localhost:30000
