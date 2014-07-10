@@ -9,8 +9,6 @@ var express = require('express')
 var pass = require('pwd');
 
 var levelup  = require('levelup');
-//var db = levelup('/tmp/lvldbtmp.db');
-//var db = levelup('/tmp/lvldbtmp.db',{valueEncoding:'json'});
 var db = require('./config/db.js');
 var passport = require('passport');
 require('./config/passport.js')(passport);
@@ -91,7 +89,7 @@ app.get('/signup', function(req, res) {
 
 // render signup page
 app.get('/settings', function(req, res) {
-  if (req.session.username === undefined) res.redirect('/menu');
+  if (req.session.username === undefined || req.user === undefined) res.redirect('/menu');
   else { res.render('settings') }
 });
 
@@ -104,6 +102,11 @@ app.get('/api/users', function(req, res) {
 	)}
 });
   
+app.get('/logout', function(req, res) {
+	delete req.session.username;
+	delete req.user;
+	res.redirect('/menu');
+});
 
 // render menu page
 app.get('/menu', function(req, res) {
