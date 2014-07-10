@@ -1,17 +1,14 @@
 # Level Auth
-Simple auth program for LevelDB.  Requires express, jade, and pwd library.  Front end app is AngularJS.
+Simple auth program for LevelDB.  Requires Node, express, jade, and pwd library.  Front end app is AngularJS.
 
 ### Config
 `git clone https://github.com/lordhelmut/levelauth.git`
 
 `npm install`
 
-Edit app.js and change the path to where to store the database.
+Edit config/db.js and change the path to where to store the database.
 
-`node app.js`
+Start the app
+`node app.js` or `npm start`
 
 Open your browser to http://localhost:30000
-
-### Passport-Local
-
-Switch to the [passport-local](https://github.com/lordhelmut/levelauth/tree/passport-local) branch above to use the npm passport module from passportjs.org

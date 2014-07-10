@@ -56,3 +56,13 @@ app.directive('match', [function () {
     }
   }
 }]);
+
+app.controller('userCtrl', function($scope, $http) {
+  $scope.name = 'userCtrl';
+  $scope.$id = $scope.name;
+  $scope.GetUser = function () {
+	$http.get('/api/users').success(function(data) {
+		$scope.user = data;
+		})
+   }
+ });

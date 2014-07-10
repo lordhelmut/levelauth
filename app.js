@@ -9,8 +9,11 @@ var express = require('express')
 var pass = require('pwd');
 
 var levelup  = require('levelup');
-//var db = levelup('/tmp/lvldbtmp.db');
-var db = levelup('/tmp/lvldbtmp.db',{valueEncoding:'json'});
+var db = require('./config/db.js');
+var passport = require('passport');
+require('./config/passport.js')(passport);
+var LevelStore = require('connect-leveldb')(express);
+var secureCookie = false;
 
 var app = express();
 
@@ -18,16 +21,41 @@ var app = express();
 app.set('port', process.env.PORT || 30000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-//app.use(express.favicon());
+app.use(express.cookieParser('thisismysecrettherearemanylikeitbutthisoneismine'));
+app.use(express.session({ 
+	//key:'BTCIN',
+	//proxy: true, //this should be set at the express level ... but just in case
+	saveUninitialized: false,
+	secret: 'thisismysecrettherearemanylikeitbutthisoneismine', 
+	cookie:{ 
+		//path:'/',
+		secure: secureCookie,
+		maxAge: 3600000 * 24 * 30 + 17 * 3600000
+		},
+	store: new LevelStore({
+		dbLocation: path.join(db.location,'sessions'),
+		//ttl: 5,
+		prefix: 'SESSION:'
+	}),
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
+}
+
+// production
+if ('production' == app.get('env')) {
+	app.set('trust proxy', true)
+	secureCookie = true;
 }
 
 // redirect to menu 
@@ -61,7 +89,23 @@ app.get('/signup', function(req, res) {
 
 // render signup page
 app.get('/settings', function(req, res) {
-  res.render('settings');
+  if (req.session.username === undefined || req.user === undefined) res.redirect('/menu');
+  else { res.render('settings') }
+});
+
+app.get('/api/users', function(req, res) {
+  if (req.session.username === undefined) {
+	res.json(404);
+  	}
+  else {
+	res.json({ loggedOnUser: req.user }
+	)}
+});
+  
+app.get('/logout', function(req, res) {
+	delete req.session.username;
+	delete req.user;
+	res.redirect('/menu');
 });
 
 // render menu page
@@ -191,12 +235,17 @@ app.post('/signup', function(req, response) {
     db.batch(createUser, function(err){
 	if(err) throw err;
 	});
-    
+
   });
     
 });
 
-app.post('/signin', function(req, response) {
+var psauth = passport.authenticate('local-login', {
+		successRedirect : '/settings', // redirect to the secure profile section
+		failureRedirect : '/signin' // redirect back to the signup page if there is an error
+	})
+
+app.post('/signin', psauth, function(req, response) {
    var username = req.body.username;
    var password = req.body.password;
 
@@ -214,36 +263,9 @@ app.post('/signin', function(req, response) {
 	return
 	}
 
-  db.get(username + ':pwdhash', function(err, value) {
-	if (err) {
-	  if (err.notFound) {
-		//console.log(username + ' not found');
-		return false;
-		}
-	  return console.log(err)
-	  };
-	pwdhash = value;
-	db.get(username + ':pwdsalt', function(err, value) {
-		if (err) { 
-		  if (err.notFound) { return false; } 
-		  return console.log(err)};
-		  pwdsalt = value;
-		  //console.log('pwdhash = ' + pwdhash + '\npwdsalt = ' + pwdsalt)
-   		  pass.hash(password, pwdsalt, function(err,hash) {
-			if (pwdhash == hash ) { 
-				console.log('signin works');
-				response.json(200,username);
-				}
-			else { response.send(403)};
-			})
-		  })
-		
-	})
-	
-	console.log('Password does not verify');
-
    });
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
