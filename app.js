@@ -100,7 +100,7 @@ app.get('/api/users', function(req, res) {
 	res.json(404);
   	}
   else {
-	res.json({ loggedOnUser: req.session.username } 
+	res.json({ loggedOnUser: req.user }
 	)}
 });
   
