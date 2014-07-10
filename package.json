@@ -14,6 +14,7 @@
 	"express":"~3.4.7",
 	"connect-leveldb":"latest",
 	"jade":"latest",
+	"passport":"latest",
 	"passport-local":"latest",
 	"pwd":"git://github.com/jlubawy/node-pwd.git"
 	},
