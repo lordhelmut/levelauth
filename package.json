@@ -1,6 +1,7 @@
 { 
   "name":"levelauth",
-  "description":"Simple authorization package using NodeJS, LevelDB, AngularJS",
+  "version":"0.1.0",
+  "description":"Simple authorization package using NodeJS, LevelDB, AngularJS, and PassportJS",
   "repository": {
     "type": "git",
     "url": "git://github.com/lordhelmut/levelauth.git"
@@ -9,8 +10,14 @@
   "dependencies":{
 	"levelup":"latest",
 	"leveldown":"latest",
+	"level-ttl":"latest",
 	"express":"~3.4.7",
+	"connect-leveldb":"latest",
 	"jade":"latest",
+	"passport-local":"latest",
 	"pwd":"git://github.com/jlubawy/node-pwd.git"
-	}
+	},
+  "scripts": {
+    "start": "node app.js"
+  }
 }	
