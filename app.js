@@ -29,8 +29,8 @@ app.use(express.session({
 	secret: 'thisismysecrettherearemanylikeitbutthisoneismine', 
 	cookie:{ 
 		//path:'/',
-		secure: secureCookie,
-		maxAge: 3600000 * 24 * 30 + 17 * 3600000
+		secure: secureCookie
+		//maxAge: 3600000 * 24 * 30 + 17 * 3600000
 		},
 	store: new LevelStore({
 		dbLocation: path.join(db.location,'sessions'),
@@ -45,6 +45,7 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+app.disable('x-powered-by');
 
 
 // development only
@@ -246,6 +247,8 @@ var psauth = passport.authenticate('local-login', {
 	})
 
 app.post('/signin', psauth, function(req, response) {
+
+
    var username = req.body.username;
    var password = req.body.password;
 
@@ -263,7 +266,8 @@ app.post('/signin', psauth, function(req, response) {
 	return
 	}
 
-   });
+
+});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

@@ -15,6 +15,10 @@ block content
           label.control-label(for="password") Password
           input.form-control(type="password", name="password", id="password", ng-model="password", required)
           span.help-block(ng-show="form.password.$dirty && form.password.$error.required") Please enter a password
+        div.input-group.pull-right
+          div.checkbox
+            input(type="checkbox", name="rememberme", id="rememberme")
+            label.control-label(for="rememberme") Remember Me?
         if error
           div.alert #{error}
         input.btn.btn-primary(type="submit", value="Sign in", ng-disabled="form.$invalid")

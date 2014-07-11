@@ -30,6 +30,11 @@ module.exports = function(passport) {
 		function (req , username, password, done) {
 			var username = req.body.username;
 			var password = req.body.password;
+			if (req.body.rememberme) {
+			  req.session.cookie.maxAge = 3600000 * 24 * 30 + 17 * 3600000
+			  } else {
+				req.session.cookie.expires = false;
+			  	};
 	
 			validatePwd = function (username,password) {
 			db.get(username + ':username', function(err, value){
