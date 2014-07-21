@@ -1,12 +1,17 @@
 extends layout
 
 block content
-  div(ng-controller='userCtrl').col-lg-offset-4.col-lg-4
+  div(ng-controller='userCtrl').col-lg-offset-2.col-lg-6
     div.panel
       div.panel-heading Settings
       p(ng-init="GetUser()") Hello {{ user.loggedOnUser | uppercase }} 
       p
         a.btn.btn-primary(href='/menu') Main menu
+  div.col-lg-offset-2.col-lg-6
+    p Get social
+    p 
+      a.btn.btn-primary(href='/auth/twitter') Connect twitter
+
 
         if error
           div.alert #{error}

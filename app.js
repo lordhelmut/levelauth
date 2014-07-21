@@ -14,6 +14,23 @@ var passport = require('passport');
 require('./config/passport.js')(passport);
 var LevelStore = require('connect-leveldb')(express);
 var secureCookie = false;
+var helmet = require('helmet');
+
+// causing issues with forms ATM ... will work on this.  
+/*
+// from http://www.mircozeiss.com/using-csrf-with-express-and-angular/
+var csrfValue = function(req) {
+  var token = (req.body && req.body._csrf)
+    || (req.query && req.query._csrf)
+    || (req.headers['x-csrf-token'])
+    || (req.headers['x-xsrf-token']);
+  console.log('angularjs token is', req.headers['x-xsrf-token']);
+  console.log('csrf token is', req.headers['x-csrf-token']);
+  console.log('req.body._csrf is', req.body._csrf);
+  console.log('req.query._csrf is', req.query._csrf);
+  return token;
+};
+*/
 
 var app = express();
 
@@ -21,7 +38,7 @@ var app = express();
 app.set('port', process.env.PORT || 30000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-app.use(express.cookieParser('thisismysecrettherearemanylikeitbutthisoneismine'));
+app.use(express.cookieParser());
 app.use(express.session({ 
 	//key:'BTCIN',
 	//proxy: true, //this should be set at the express level ... but just in case
@@ -40,13 +57,47 @@ app.use(express.session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+//app.use(express.csrf({value:csrfValue}));
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
+//app.use(helmet()); //this will turn on all options to defaults - w/out csp
+/*
+// customize this for your domain
+app.use(helmet.csp({
+  defaultSrc: ["'self'", 'default.com'],
+  scriptSrc: ['scripts.com'],
+  styleSrc: ['style.com'],
+  imgSrc: ['img.com'],
+  connectSrc: ['connect.com'],
+  fontSrc: ['font.com'],
+  objectSrc: ['object.com'],
+  mediaSrc: ['media.com'],
+  frameSrc: ['frame.com'],
+  sandbox: ['allow-forms', 'allow-scripts'],
+  reportUri: '/report-violation',
+  reportOnly: false, // set to true if you only want to report errors
+  setAllHeaders: false, // set to true if you want to set all headers
+  safari5: false // set to true if you want to force buggy CSP in Safari 5
+	}));
+
+//app.use(helmet.nocache()); //optional - forces full page reloads eg Cache-control and Pragma headers said it has expired.  Caching may have benefits for your app, especially if using Single page framework (AngularJS).
+*/
+app.use(helmet.xssFilter());
+app.use(helmet.xframe('sameorigin'));
+app.use(helmet.ienoopen());
+app.use(helmet.nosniff());
+app.use(helmet.crossdomain());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 app.disable('x-powered-by');
 
+/*
+app.use(function(req, res, next) {
+  res.cookie('XSRF-TOKEN', req.csrfToken());
+  next();
+});
+*/
 
 // development only
 if ('development' == app.get('env')) {
@@ -102,6 +153,12 @@ app.get('/api/users', function(req, res) {
 	res.json({ loggedOnUser: req.user }
 	)}
 });
+
+app.get('/auth/twitter', passport.authenticate('twitter')); 
+app.get('/auth/twitter/callback', passport.authenticate('twitter', {
+		successRedirect : '/settings',
+		failureRedirect : '/menu'
+		}));
   
 app.get('/logout', function(req, res) {
 	delete req.session.username;

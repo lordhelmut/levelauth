@@ -16,6 +16,9 @@
 	"jade":"latest",
 	"passport":"latest",
 	"passport-local":"latest",
+	"passport-twitter":"latest",
+	"passport-google":"latest",
+	"helmet":"latest",
 	"pwd":"git://github.com/jlubawy/node-pwd.git"
 	},
   "scripts": {
